@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Notes - Learn Sargam</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Home Page -->
+        <div id="homePage" class="page active">
+            <div class="home-container">
+                <div class="header">
+                    <h1>🎵 Learn Sargam 🎵</h1>
+                    <p class="subtitle">Master the 8 Notes of Indian Classical Music</p>
+                </div>
+
+                <div class="lessons-grid" id="lessonsContainer">
+                    <!-- Lessons will be loaded dynamically -->
+                </div>
+
+                <div class="notes-info">
+                    <h3>The 8 Notes of Sargam:</h3>
+                    <div class="notes-display">
+                        <div class="note-label">
+                            <span class="note-letter S">S</span>
+                            <span class="note-name">Sa</span>
+                        </div>
+                        <div class="note-label">
+                            <span class="note-letter R">R</span>
+                            <span class="note-name">Re</span>
+                        </div>
+                        <div class="note-label">
+                            <span class="note-letter G">G</span>
+                            <span class="note-name">Ga</span>
+                        </div>
+                        <div class="note-label">
+                            <span class="note-letter M">M</span>
+                            <span class="note-name">Ma</span>
+                        </div>
+                        <div class="note-label">
+                            <span class="note-letter P">P</span>
+                            <span class="note-name">Pa</span>
+                        </div>
+                        <div class="note-label">
+                            <span class="note-letter D">D</span>
+                            <span class="note-name">Da</span>
+                        </div>
+                        <div class="note-label">
+                            <span class="note-letter N">N</span>
+                            <span class="note-name">Ni</span>
+                        </div>
+                        <div class="note-label">
+                            <span class="note-letter Sa">Ṡ</span>
+                            <span class="note-name">Saa</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lesson Page -->
+        <div id="lessonPage" class="page">
+            <div class="lesson-header">
+                <button class="back-btn" onclick="goHome()">← Back</button>
+                <h2 id="lessonTitle"></h2>
+                <div></div> <!-- spacer -->
+            </div>
+
+            <div class="lesson-container">
+                <!-- Left: Text Content -->
+                <div class="lesson-text-panel">
+                    <h3>Notes Pattern</h3>
+                    <div id="notesContent" class="notes-content">
+                        <!-- Content will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Right: Animation Panel -->
+                <div class="lesson-animation-panel">
+                    <div class="controls-panel">
+                        <button id="playBtn" class="control-btn play-btn" onclick="togglePlay()">
+                            <span class="btn-icon">▶</span> Play
+                        </button>
+                        <button id="stopBtn" class="control-btn stop-btn" onclick="stopPlay()">
+                            <span class="btn-icon">⏹</span> Stop
+                        </button>
+                        <div class="toggle-controls">
+                            <button id="soundToggle" class="toggle-btn active" onclick="toggleSound()">
+                                <span class="btn-icon">🔊</span> Sound
+                            </button>
+                            <button id="voiceToggle" class="toggle-btn" onclick="toggleVoice()">
+                                <span class="btn-icon">🎤</span> Voice
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="staff-container">
+                        <div class="staff">
+                            <div class="staff-line"></div>
+                            <div class="staff-line"></div>
+                            <div class="staff-line"></div>
+                            <div class="staff-line"></div>
+                            <div class="staff-line"></div>
+                            <div class="staff-line"></div>
+                            <div class="staff-line"></div>
+                            <div class="staff-line"></div>
+                        </div>
+                        <div id="notesAnimation" class="notes-animation">
+                            <!-- Animated notes will be placed here -->
+                        </div>
+                    </div>
+
+                    <div class="progress-info">
+                        <span id="progressText">Ready to learn</span>
+                        <div class="progress-bar">
+                            <div id="progressFill" class="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Notes - Quick Start</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        h2 {
+            color: #764ba2;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        p {
+            line-height: 1.8;
+            margin-bottom: 15px;
+            color: #555;
+        }
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #d32f2f;
+        }
+        .steps {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .step {
+            margin-bottom: 20px;
+        }
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .launch-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 20px 0;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+        }
+        .launch-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(76, 175, 80, 0.4);
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .feature-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+        }
+        .feature-card h3 {
+            margin-bottom: 10px;
+        }
+        .notes-quick {
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .note-row {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .note-btn {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Music Notes - Learn Sargam Quick Start 🎵</h1>
+
+        <h2>Welcome!</h2>
+        <p>This is a professional music learning application designed for kids and beginners to master the 8 notes of Indian classical music (Sargam).</p>
+
+        <h2>Key Features</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>🎨 Colorful Animation</h3>
+                <p>Watch notes light up in real-time with beautiful color gradients from green to red</p>
+            </div>
+            <div class="feature-card">
+                <h3>🔊 Full Audio Support</h3>
+                <p>Synthesized musical tones and voice pronunciation for each note</p>
+            </div>
+            <div class="feature-card">
+                <h3>📚 Multiple Lessons</h3>
+                <p>Start with Sarali Varisai and progress to advanced patterns</p>
+            </div>
+            <div class="feature-card">
+                <h3>📱 Responsive Design</h3>
+                <p>Works perfectly on desktop, tablet, and mobile devices</p>
+            </div>
+        </div>
+
+        <h2>The 8 Notes of Sargam</h2>
+        <div class="notes-quick">
+            <div class="note-row">
+                <div class="note-btn" style="background: #4CAF50;">S<br><small>Sa</small></div>
+                <div class="note-btn" style="background: #66BB6A;">R<br><small>Re</small></div>
+                <div class="note-btn" style="background: #81C784;">G<br><small>Ga</small></div>
+                <div class="note-btn" style="background: #FFD54F; color: #333;">M<br><small>Ma</small></div>
+                <div class="note-btn" style="background: #FFB74D;">P<br><small>Pa</small></div>
+                <div class="note-btn" style="background: #FF7043;">D<br><small>Da</small></div>
+                <div class="note-btn" style="background: #E64A19;">N<br><small>Ni</small></div>
+                <div class="note-btn" style="background: #D32F2F;">Ṡ<br><small>Saa</small></div>
+            </div>
+        </div>
+
+        <h2>Getting Started</h2>
+        <div class="steps">
+            <div class="step">
+                <span class="step-number">1</span>
+                <strong>Launch the App</strong>
+                <p>Click the button below to open the music learning application</p>
+            </div>
+            <div class="step">
+                <span class="step-number">2</span>
+                <strong>Choose a Lesson</strong>
+                <p>Select from available lessons (Sarali Varisai, Jantai, or Advanced Patterns)</p>
+            </div>
+            <div class="step">
+                <span class="step-number">3</span>
+                <strong>Hit Play</strong>
+                <p>Click the Green Play button to start the lesson. Watch the animation and listen!</p>
+            </div>
+            <div class="step">
+                <span class="step-number">4</span>
+                <strong>Control Your Learning</strong>
+                <p>Toggle Sound and Voice as needed. Use Stop to pause at any time</p>
+            </div>
+            <div class="step">
+                <span class="step-number">5</span>
+                <strong>Practice</strong>
+                <p>Repeat lessons as many times as you need. Try singing along with the voice!</p>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="index.html" class="launch-btn">🎵 LAUNCH MUSIC NOTES APP 🎵</a>
+        </div>
+
+        <h2>What Each Control Does</h2>
+        <div style="background: #f5f5f5; padding: 20px; border-radius: 10px; margin: 20px 0;">
+            <p><strong>▶ Play Button</strong> - Starts playing the lesson. Watch the notes light up!</p>
+            <p><strong>⏹ Stop Button</strong> - Stops playback and resets to the beginning</p>
+            <p><strong>🔊 Sound Toggle</strong> - Play/Mute musical notes</p>
+            <p><strong>🎤 Voice Toggle</strong> - Play/Mute voice pronunciation</p>
+            <p><strong>← Back Button</strong> - Return to lesson selection (on lesson page)</p>
+        </div>
+
+        <h2>Tips for Learning</h2>
+        <ul style="margin-left: 20px; line-height: 2;">
+            <li>Start with <strong>Sarali Varisai</strong> - the foundational lesson</li>
+            <li>Enable both <strong>Sound and Voice</strong> for best learning</li>
+            <li>Play each lesson <strong>multiple times</strong> until you memorize it</li>
+            <li>Try <strong>singing along</strong> with the voice pronunciation</li>
+            <li>Progress to <strong>Advanced Patterns</strong> once you master the basics</li>
+            <li><strong>Be patient</strong> - learning music takes time and practice</li>
+        </ul>
+
+        <h2>Adding Your Own Lessons</h2>
+        <p>You can easily add custom lessons by creating text files in the <code>lessons/</code> folder:</p>
+        <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; margin: 10px 0; font-family: monospace;">
+            Create: <code>lessons/my-lesson.txt</code><br>
+            Content: <code>S R G M P D N Ṡ</code><br>
+            (One pattern per line, notes separated by spaces)
+        </div>
+        <p>The app will automatically detect and create a button for your new lesson!</p>
+
+        <h2>System Requirements</h2>
+        <p>This app works on modern browsers including:</p>
+        <ul style="margin-left: 20px; line-height: 2;">
+            <li>Chrome (Desktop & Mobile)</li>
+            <li>Firefox (Desktop & Mobile)</li>
+            <li>Safari (Desktop & Mobile)</li>
+            <li>Edge (Desktop)</li>
+        </ul>
+
+        <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 2px solid #ddd;">
+            <p style="color: #999;">Music is the language of the soul. Happy learning! 🎵</p>
+        </div>
+    </div>
+</body>
+</html>

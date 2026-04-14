@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Notes - Testing Console</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f0f0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .section h2 {
+            color: #764ba2;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        .test-group {
+            margin-bottom: 15px;
+        }
+        .test-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+        button.success {
+            background: #4CAF50;
+        }
+        button.success:hover {
+            background: #45a049;
+        }
+        button.danger {
+            background: #f44336;
+        }
+        button.danger:hover {
+            background: #d32f2f;
+        }
+        .note-button {
+            width: 50px;
+            height: 50px;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+        }
+        .note-button.S { background: #4CAF50; }
+        .note-button.R { background: #66BB6A; }
+        .note-button.G { background: #81C784; }
+        .note-button.M { background: #FFD54F; color: #333; }
+        .note-button.P { background: #FFB74D; }
+        .note-button.D { background: #FF7043; }
+        .note-button.N { background: #E64A19; }
+        .note-button.Sa { background: #D32F2F; }
+        .note-button:hover {
+            transform: scale(1.15);
+        }
+        .output {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.9em;
+            line-height: 1.6;
+            border: 1px solid #ddd;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .success-text {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .error-text {
+            color: #f44336;
+            font-weight: bold;
+        }
+        .info-text {
+            color: #667eea;
+            font-weight: bold;
+        }
+        .frequency-info {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            line-height: 1.8;
+            margin-top: 10px;
+        }
+        input[type="range"] {
+            width: 200px;
+            vertical-align: middle;
+        }
+        .slider-value {
+            display: inline-block;
+            width: 60px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Music Notes Testing Console 🎵</h1>
+        <p style="color: #666; margin-bottom: 20px;">Test individual components and features of the Music Notes application.</p>
+
+        <!-- AUDIO SYSTEM TESTS -->
+        <div class="section">
+            <h2>🔊 Audio System Tests</h2>
+            
+            <div class="test-group">
+                <label>Test Individual Notes</label>
+                <div style="display: flex; flex-wrap: wrap;">
+                    <button class="note-button S" onclick="testPlayNote('S')">S</button>
+                    <button class="note-button R" onclick="testPlayNote('R')">R</button>
+                    <button class="note-button G" onclick="testPlayNote('G')">G</button>
+                    <button class="note-button M" onclick="testPlayNote('M')">M</button>
+                    <button class="note-button P" onclick="testPlayNote('P')">P</button>
+                    <button class="note-button D" onclick="testPlayNote('D')">D</button>
+                    <button class="note-button N" onclick="testPlayNote('N')">N</button>
+                    <button class="note-button Sa" onclick="testPlayNote('Ṡ')">Ṡ</button>
+                </div>
+                <div id="audioOutput" class="output" style="display: none;"></div>
+            </div>
+
+            <div class="test-group">
+                <label>Test Ascending Scale (S to Ṡ)</label>
+                <button class="success" onclick="testAscendingScale()">▶ Play Ascending</button>
+                <button class="danger" onclick="stopAudio()">⏹ Stop</button>
+            </div>
+
+            <div class="test-group">
+                <label>Test Descending Scale (Ṡ to S)</label>
+                <button class="success" onclick="testDescendingScale()">▶ Play Descending</button>
+                <button class="danger" onclick="stopAudio()">⏹ Stop</button>
+            </div>
+
+            <div class="test-group">
+                <label>Audio System Status</label>
+                <button onclick="checkAudioContext()">Check Audio Context</button>
+                <div id="audioStatus" class="output" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- VOICE SYNTHESIS TESTS -->
+        <div class="section">
+            <h2>🎤 Voice Synthesis Tests</h2>
+            
+            <div class="test-group">
+                <label>Test Note Names</label>
+                <button class="success" onclick="testAllVoices()">Speak All Note Names</button>
+                <button onclick="testVoiceNote('S')">Say Sa</button>
+                <button onclick="testVoiceNote('R')">Say Re</button>
+                <button onclick="testVoiceNote('G')">Say Ga</button>
+                <button onclick="testVoiceNote('M')">Say Ma</button>
+                <button onclick="testVoiceNote('P')">Say Pa</button>
+                <button onclick="testVoiceNote('D')">Say Da</button>
+                <button onclick="testVoiceNote('N')">Say Ni</button>
+                <button onclick="testVoiceNote('Ṡ')">Say Saa</button>
+            </div>
+
+            <div class="test-group">
+                <label>Voice Synthesis Status</label>
+                <button onclick="checkVoiceSynthesis()">Check Voice Support</button>
+                <div id="voiceStatus" class="output" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- FREQUENCY INFO -->
+        <div class="section">
+            <h2>📊 Note Frequencies</h2>
+            
+            <div class="frequency-info">
+                <strong>Note Frequencies (Hz):</strong><br>
+                S = 261.63 Hz (C4)<br>
+                R = 293.66 Hz (D4)<br>
+                G = 329.63 Hz (E4)<br>
+                M = 349.23 Hz (F4)<br>
+                P = 392.00 Hz (G4)<br>
+                D = 440.00 Hz (A4)<br>
+                N = 493.88 Hz (B4)<br>
+                Ṡ = 523.25 Hz (C5)<br>
+            </div>
+
+            <div class="test-group" style="margin-top: 15px;">
+                <label>Custom Frequency Test</label>
+                <input type="range" id="freqSlider" min="100" max="1000" value="261" step="1" onchange="testCustomFrequency()">
+                <span class="slider-value" id="freqDisplay">261 Hz</span>
+                <button class="success" onclick="playCustomFrequency()">Play</button>
+                <div id="freqOutput" class="output" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- ANIMATION TESTS -->
+        <div class="section">
+            <h2>✨ Animation Tests</h2>
+            
+            <div class="test-group">
+                <label>Test Animation Rendering</label>
+                <button class="success" onclick="testAnimationArea()">Test Animation Area</button>
+                <div style="background: #f9f9f9; padding: 20px; border-radius: 5px; margin-top: 10px; min-height: 200px;">
+                    <div id="testAnimationArea" style="position: relative; width: 100%; height: 200px; border: 2px solid #ddd; border-radius: 5px;"></div>
+                </div>
+            </div>
+
+            <div class="test-group">
+                <label>Test Quick Animation Sequence</label>
+                <button class="success" onclick="testAnimationSequence()">Run Sequence</button>
+                <button class="danger" onclick="stopAnimationTest()">Stop</button>
+                <div id="animOutput" class="output" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- LESSON LOADING TESTS -->
+        <div class="section">
+            <h2>📚 Lesson System Tests</h2>
+            
+            <div class="test-group">
+                <label>Test Lesson Loading</label>
+                <button onclick="testLessonLoading('sarali-varisai')">Load Sarali Varisai</button>
+                <button onclick="testLessonLoading('jantai')">Load Jantai</button>
+                <button onclick="testLessonLoading('advanced-patterns')">Load Advanced</button>
+                <div id="lessonOutput" class="output" style="display: none;"></div>
+            </div>
+
+            <div class="test-group">
+                <label>Test Lesson Parsing</label>
+                <textarea style="width: 100%; height: 100px; padding: 10px; border-radius: 5px; border: 1px solid #ddd; font-family: monospace;" id="lessonInput" placeholder="Paste lesson content here...">S R G M P D N Ṡ
+Ṡ N D P M G R S</textarea>
+                <button onclick="testLessonParsing()">Parse Lesson</button>
+                <div id="parseOutput" class="output" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- BROWSER COMPATIBILITY -->
+        <div class="section">
+            <h2>🌐 Browser Compatibility</h2>
+            
+            <div class="test-group">
+                <label>Check Browser Support</label>
+                <button class="success" onclick="checkBrowserSupport()">Run Full Diagnostics</button>
+                <div id="browserOutput" class="output" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- PERFORMANCE TESTS -->
+        <div class="section">
+            <h2>⚡ Performance Tests</h2>
+            
+            <div class="test-group">
+                <label>System Performance</label>
+                <button onclick="testPerformance()">Run Performance Test</button>
+                <div id="perfOutput" class="output" style="display: none;"></div>
+            </div>
+
+            <div class="test-group">
+                <label>Memory Usage</label>
+                <button onclick="testMemory()">Check Memory</button>
+                <div id="memOutput" class="output" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- RESET TESTS -->
+        <div class="section" style="margin-top: 30px; border-top: 2px solid #ddd; padding-top: 20px;">
+            <h2 style="color: #f44336;">Cleanup</h2>
+            <button class="danger" onclick="clearAllOutputs()">Clear All Test Results</button>
+            <button class="danger" onclick="resetPage()">Reset Page</button>
+        </div>
+    </div>
+
+    <script>
+        // Audio context
+        let audioContext;
+        let animationTestRunning = false;
+
+        const noteFrequencies = {
+            'S': 261.63, 'R': 293.66, 'G': 329.63, 'M': 349.23,
+            'P': 392.00, 'D': 440.00, 'N': 493.88, 'Ṡ': 523.25
+        };
+
+        const noteNames = {
+            'S': 'Sa', 'R': 'Re', 'G': 'Ga', 'M': 'Ma',
+            'P': 'Pa', 'D': 'Da', 'N': 'Ni', 'Ṡ': 'Saa'
+        };
+
+        function initAudioContext() {
+            if (!audioContext) {
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    return true;
+                } catch (e) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function testPlayNote(note) {
+            if (!initAudioContext()) return;
+            const freq = noteFrequencies[note];
+            const now = audioContext.currentTime;
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            gain.gain.setValueAtTime(0.3, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+            osc.frequency.value = freq;
+            osc.start(now);
+            osc.stop(now + 0.5);
+            
+            showOutput('audioOutput', `<span class="success-text">✓ Playing ${note} (${freq} Hz) for 0.5s</span>`);
+        }
+
+        async function testAscendingScale() {
+            if (!initAudioContext()) return;
+            const notes = ['S', 'R', 'G', 'M', 'P', 'D', 'N', 'Ṡ'];
+            showOutput('audioOutput', '<span class="info-text">Playing ascending scale...</span>');
+            for (let note of notes) {
+                testPlayNote(note);
+                await new Promise(resolve => setTimeout(resolve, 600));
+            }
+            showOutput('audioOutput', '<span class="success-text">✓ Ascending scale completed</span>');
+        }
+
+        async function testDescendingScale() {
+            if (!initAudioContext()) return;
+            const notes = ['Ṡ', 'N', 'D', 'P', 'M', 'G', 'R', 'S'];
+            showOutput('audioOutput', '<span class="info-text">Playing descending scale...</span>');
+            for (let note of notes) {
+                testPlayNote(note);
+                await new Promise(resolve => setTimeout(resolve, 600));
+            }
+            showOutput('audioOutput', '<span class="success-text">✓ Descending scale completed</span>');
+        }
+
+        function stopAudio() {
+            if (audioContext) {
+                audioContext.close();
+                audioContext = null;
+                showOutput('audioOutput', '<span class="error-text">⏹ Audio stopped</span>');
+            }
+        }
+
+        function checkAudioContext() {
+            const result = [];
+            result.push('Audio Context Status:');
+            result.push(`- Initialized: ${audioContext ? 'Yes' : 'No'}`);
+            result.push(`- Web Audio API: ${window.AudioContext || window.webkitAudioContext ? 'Supported' : 'Not Supported'}`);
+            result.push(`- Current State: ${audioContext ? audioContext.state : 'N/A'}`);
+            result.push(`- Sample Rate: ${audioContext ? audioContext.sampleRate + ' Hz' : 'N/A'}`);
+            showOutput('audioStatus', result.join('\n'));
+        }
+
+        async function testAllVoices() {
+            const notes = ['S', 'R', 'G', 'M', 'P', 'D', 'N', 'Ṡ'];
+            for (let note of notes) {
+                await testVoiceNote(note);
+                await new Promise(resolve => setTimeout(resolve, 1500));
+            }
+        }
+
+        async function testVoiceNote(note) {
+            if (!('speechSynthesis' in window)) return;
+            const utterance = new SpeechSynthesisUtterance(noteNames[note]);
+            utterance.rate = 2;
+            utterance.pitch = 1.2;
+            speechSynthesis.cancel();
+            speechSynthesis.speak(utterance);
+        }
+
+        function checkVoiceSynthesis() {
+            const result = [];
+            result.push('Voice Synthesis Status:');
+            result.push(`- Speech Synthesis API: ${'speechSynthesis' in window ? 'Supported' : 'Not Supported'}`);
+            if ('speechSynthesis' in window) {
+                result.push(`- Voices Available: ${speechSynthesis.getVoices().length}`);
+                result.push(`- Current State: ${speechSynthesis.speaking ? 'Speaking' : 'Idle'}`);
+            }
+            showOutput('voiceStatus', result.join('\n'));
+        }
+
+        function testCustomFrequency() {
+            const freq = document.getElementById('freqSlider').value;
+            document.getElementById('freqDisplay').textContent = freq + ' Hz';
+        }
+
+        function playCustomFrequency() {
+            if (!initAudioContext()) return;
+            const freq = parseFloat(document.getElementById('freqSlider').value);
+            const now = audioContext.currentTime;
+            const osc = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            osc.connect(gain);
+            gain.connect(audioContext.destination);
+            gain.gain.setValueAtTime(0.2, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+            osc.frequency.value = freq;
+            osc.start(now);
+            osc.stop(now + 0.5);
+            showOutput('freqOutput', `<span class="success-text">Playing ${freq} Hz</span>`);
+        }
+
+        function testAnimationArea() {
+            const area = document.getElementById('testAnimationArea');
+            area.innerHTML = '';
+            const notes = ['S', 'R', 'G', 'M', 'P', 'D', 'N', 'Ṡ'];
+            const colors = ['#4CAF50', '#66BB6A', '#81C784', '#FFD54F', '#FFB74D', '#FF7043', '#E64A19', '#D32F2F'];
+            
+            notes.forEach((note, idx) => {
+                const pos = (idx * 12.5);
+                const btn = document.createElement('div');
+                btn.style.position = 'absolute';
+                btn.style.width = '40px';
+                btn.style.height = '40px';
+                btn.style.borderRadius = '50%';
+                btn.style.background = colors[idx];
+                btn.style.top = pos + '%';
+                btn.style.left = '50%';
+                btn.style.transform = 'translateX(-50%)';
+                btn.style.display = 'flex';
+                btn.style.alignItems = 'center';
+                btn.style.justifyContent = 'center';
+                btn.style.color = 'white';
+                btn.style.fontWeight = 'bold';
+                btn.textContent = note;
+                area.appendChild(btn);
+            });
+            showOutput('animOutput', '<span class="success-text">✓ Animation area rendered</span>');
+        }
+
+        async function testAnimationSequence() {
+            animationTestRunning = true;
+            testAnimationArea();
+            const area = document.getElementById('testAnimationArea');
+            const buttons = area.querySelectorAll('div');
+            let count = 0;
+            
+            const output = [];
+            output.push('Animation Sequence:');
+            
+            while (animationTestRunning && count < buttons.length) {
+                buttons[count].style.border = '3px solid #FFD700';
+                buttons[count].style.boxShadow = '0 0 20px rgba(255, 215, 0, 0.8)';
+                output.push(`Playing note ${count + 1}/8`);
+                showOutput('animOutput', output.join('\n'));
+                
+                await new Promise(resolve => setTimeout(resolve, 600));
+                
+                buttons[count].style.border = 'none';
+                buttons[count].style.boxShadow = 'none';
+                count++;
+            }
+            
+            output.push('✓ Sequence completed');
+            showOutput('animOutput', output.join('\n'));
+        }
+
+        function stopAnimationTest() {
+            animationTestRunning = false;
+            const area = document.getElementById('testAnimationArea');
+            const buttons = area.querySelectorAll('div');
+            buttons.forEach(btn => {
+                btn.style.border = 'none';
+                btn.style.boxShadow = 'none';
+            });
+        }
+
+        async function testLessonLoading(lessonName) {
+            try {
+                const response = await fetch(`lessons/${lessonName}.txt`);
+                const text = await response.text();
+                const result = [];
+                result.push(`Lesson: ${lessonName}`);
+                result.push(`Status: ✓ Loaded successfully`);
+                result.push(`Size: ${text.length} bytes`);
+                result.push(`Lines: ${text.split('\n').filter(l => l.trim()).length}`);
+                result.push(`\nContent Preview:`);
+                result.push(text.substring(0, 200) + (text.length > 200 ? '...' : ''));
+                showOutput('lessonOutput', result.join('\n'));
+            } catch (error) {
+                showOutput('lessonOutput', `<span class="error-text">✗ Error loading lesson: ${error.message}</span>`);
+            }
+        }
+
+        function testLessonParsing() {
+            const content = document.getElementById('lessonInput').value;
+            const lines = content.split('\n').filter(line => line.trim().length > 0);
+            const result = [];
+            result.push('Lesson Parsing Results:');
+            result.push(`Total lines: ${lines.length}`);
+            result.push('');
+            
+            lines.forEach((line, idx) => {
+                const notes = line.split(/\s+/).filter(n => n.length > 0);
+                result.push(`Line ${idx + 1}: ${notes.length} notes`);
+                result.push(`  "${line}"`);
+            });
+            
+            showOutput('parseOutput', result.join('\n'));
+        }
+
+        function checkBrowserSupport() {
+            const result = [];
+            result.push('Browser Compatibility Report:');
+            result.push('');
+            result.push(`Browser: ${navigator.userAgent.substring(0, 50)}...`);
+            result.push(`Language: ${navigator.language}`);
+            result.push('');
+            result.push('Features:');
+            result.push(`✓ Web Audio API: ${!!(window.AudioContext || window.webkitAudioContext)}`);
+            result.push(`✓ Speech Synthesis: ${'speechSynthesis' in window}`);
+            result.push(`✓ LocalStorage: ${'localStorage' in window}`);
+            result.push(`✓ ServiceWorker: ${'serviceWorker' in navigator}`);
+            result.push(`✓ Fetch API: ${'fetch' in window}`);
+            result.push(`✓ Promises: ${'Promise' in window}`);
+            result.push(`✓ ES6: ${'const' in window.eval.toString()}`);
+            result.push('');
+            result.push('Recommended: Chrome 90+, Firefox 88+, Safari 14.1+, Edge 90+');
+            showOutput('browserOutput', result.join('\n'));
+        }
+
+        function testPerformance() {
+            const result = [];
+            result.push('Performance Analysis:');
+            result.push(`Performance API Available: ${'performance' in window}`);
+            
+            if ('performance' in window) {
+                const perf = performance.timing;
+                const navigation = performance.getEntriesByType('navigation');
+                result.push(`Page Load Time: ${perf.loadEventEnd - perf.navigationStart}ms`);
+                result.push(`DOM Ready Time: ${perf.domContentLoadedEventEnd - perf.navigationStart}ms`);
+                result.push(`Resource Timing: ${perf.responseEnd - perf.navigationStart}ms`);
+            }
+            
+            result.push(`Memory Available: ${(performance.memory ? (performance.memory.jsHeapSizeLimit / 1048576).toFixed(2) : 'N/A')} MB`);
+            result.push(`Memory Used: ${(performance.memory ? (performance.memory.usedJSHeapSize / 1048576).toFixed(2) : 'N/A')} MB`);
+            
+            showOutput('perfOutput', result.join('\n'));
+        }
+
+        function testMemory() {
+            if (!performance.memory) {
+                showOutput('memOutput', 'Memory information not available in this browser');
+                return;
+            }
+            
+            const result = [];
+            result.push('Memory Usage Report:');
+            result.push(`Total JS Heap Size: ${(performance.memory.jsHeapSizeLimit / 1048576).toFixed(2)} MB`);
+            result.push(`Used JS Heap Size: ${(performance.memory.usedJSHeapSize / 1048576).toFixed(2)} MB`);
+            result.push(`JS Heap Size Limit: ${(performance.memory.jsHeapSizeLimit / 1048576).toFixed(2)} MB`);
+            const usage = ((performance.memory.usedJSHeapSize / performance.memory.jsHeapSizeLimit) * 100).toFixed(2);
+            result.push(`Memory Usage: ${usage}%`);
+            showOutput('memOutput', result.join('\n'));
+        }
+
+        function showOutput(elementId, content) {
+            const element = document.getElementById(elementId);
+            element.textContent = typeof content === 'string' ? content : content.join('\n');
+            element.style.display = 'block';
+        }
+
+        function clearAllOutputs() {
+            document.querySelectorAll('.output').forEach(output => {
+                output.style.display = 'none';
+                output.textContent = '';
+            });
+        }
+
+        function resetPage() {
+            location.reload();
+        }
+
+        // Initialize on load
+        window.addEventListener('click', initAudioContext, { once: true });
+    </script>
+</body>
+</html>
