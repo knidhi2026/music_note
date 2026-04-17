@@ -123,6 +123,63 @@
         </div>
     </div>
 
+    <!-- Feedback Modal -->
+    <div id="feedbackModal" class="feedback-modal">
+        <div class="feedback-content">
+            <div class="feedback-header">
+                <h2>📝 Send Your Feedback</h2>
+                <button class="feedback-close" onclick="closeFeedback()">×</button>
+            </div>
+            
+            <div class="feedback-body">
+                <!-- Name Section -->
+                <div class="feedback-section">
+                    <label for="feedbackName">Your Name:</label>
+                    <input type="text" id="feedbackName" placeholder="Enter your name">
+                </div>
+
+                <!-- Rating Section -->
+                <div class="feedback-section">
+                    <label>How would you rate this app? ⭐</label>
+                    <div class="rating-stars">
+                        <button class="star" onclick="setRating(1)" data-rating="1">★</button>
+                        <button class="star" onclick="setRating(2)" data-rating="2">★</button>
+                        <button class="star" onclick="setRating(3)" data-rating="3">★</button>
+                        <button class="star" onclick="setRating(4)" data-rating="4">★</button>
+                        <button class="star" onclick="setRating(5)" data-rating="5">★</button>
+                    </div>
+                    <span id="ratingDisplay" class="rating-display">Select a rating</span>
+                </div>
+                
+                <!-- Feedback Text -->
+                <div class="feedback-section">
+                    <label for="feedbackText">Your Feedback:</label>
+                    <textarea id="feedbackText" placeholder="Tell us what you think... (optional)" rows="5"></textarea>
+                </div>
+                
+                <!-- Email (Optional) -->
+                <div class="feedback-section">
+                    <label for="feedbackEmail">Your Email (optional):</label>
+                    <input type="email" id="feedbackEmail" placeholder="yourname@example.com">
+                </div>
+
+                <!-- Previous Feedback Display -->
+                <div class="feedback-section" id="feedbackListSection" style="display: none;">
+                    <label>� What Others Say:</label>
+                    <div id="feedbackList" class="feedback-list"></div>
+                </div>
+            </div>
+            
+            <div class="feedback-footer">
+                <button class="feedback-btn cancel" onclick="closeFeedback()">Cancel</button>
+                <button class="feedback-btn submit" onclick="submitFeedback()">Submit Feedback</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Feedback Button -->
+    <button id="feedbackBtn" class="floating-feedback-btn" onclick="openFeedback()">💬 Feedback</button>
+
     <script src="script.js"></script>
 </body>
 </html>

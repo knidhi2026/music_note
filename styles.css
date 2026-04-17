@@ -599,6 +599,341 @@ body {
     border-radius: 10px;
 }
 
+/* FEEDBACK SECTION */
+.floating-feedback-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    border-radius: 50px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    transition: all 0.3s ease;
+    z-index: 900;
+}
+
+.floating-feedback-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.floating-feedback-btn:active {
+    transform: translateY(-1px);
+}
+
+.feedback-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.feedback-modal.active {
+    display: flex;
+}
+
+.feedback-content {
+    background: white;
+    border-radius: 15px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.feedback-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 25px;
+    border-radius: 15px 15px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.feedback-header h2 {
+    margin: 0;
+    font-size: 1.5em;
+}
+
+.feedback-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2em;
+    cursor: pointer;
+    padding: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+
+.feedback-close:hover {
+    transform: rotate(90deg);
+}
+
+.feedback-body {
+    padding: 30px;
+}
+
+.feedback-section {
+    margin-bottom: 25px;
+}
+
+.feedback-section label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #333;
+    font-size: 1.05em;
+}
+
+.rating-stars {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.star {
+    background: none;
+    border: 2px solid #ddd;
+    color: #ddd;
+    font-size: 2.5em;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.star:hover {
+    transform: scale(1.1);
+    border-color: #667eea;
+    color: #667eea;
+}
+
+.star.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: #667eea;
+}
+
+.rating-display {
+    display: inline-block;
+    font-size: 0.95em;
+    color: #666;
+    margin-top: 5px;
+}
+
+#feedbackText {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1em;
+    resize: vertical;
+    transition: border-color 0.2s;
+}
+
+#feedbackText:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+#feedbackName {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: border-color 0.2s;
+}
+
+#feedbackName:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+#feedbackEmail {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: border-color 0.2s;
+}
+
+#feedbackEmail:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.feedback-footer {
+    padding: 20px 30px;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.feedback-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.feedback-btn.cancel {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.feedback-btn.cancel:hover {
+    background: #e0e0e0;
+}
+
+.feedback-btn.submit {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.feedback-btn.submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.feedback-btn.submit:active {
+    transform: translateY(0);
+}
+
+/* Success Message */
+.feedback-success {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #51cf66;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(81, 207, 102, 0.4);
+    animation: slideInRight 0.3s ease-out;
+    z-index: 1100;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.feedback-list {
+    max-height: 300px;
+    overflow-y: auto;
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 10px;
+}
+
+.feedback-item {
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-left: 4px solid #667eea;
+    transition: all 0.2s ease;
+}
+
+.feedback-item:hover {
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.1);
+}
+
+.feedback-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.feedback-stars {
+    color: #FFD700;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.feedback-timestamp {
+    font-size: 0.85em;
+    color: #999;
+}
+
+.feedback-name {
+    font-size: 0.95em;
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.feedback-message {
+    color: #555;
+    font-size: 0.95em;
+    margin-bottom: 8px;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.feedback-email {
+    font-size: 0.9em;
+    color: #667eea;
+    font-style: italic;
+}
+
+.feedback-page {
+    font-size: 0.85em;
+    color: #888;
+    margin-top: 5px;
+}
+
 ::-webkit-scrollbar-thumb:hover {
     background: #764ba2;
 }

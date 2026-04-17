@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Test - Debug Voice Notes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #764ba2;
+        }
+        .log {
+            background: #f9f9f9;
+            border-left: 3px solid #667eea;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+            word-break: break-all;
+        }
+        .error {
+            border-left-color: #ff6b6b;
+            background: #ffe0e0;
+        }
+        .success {
+            border-left-color: #51cf66;
+            background: #e7f5ea;
+        }
+        h2 {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎵 Audio Test - Diagnose Voice Notes Issue</h1>
+    
+    <div class="test-section">
+        <h2>1. Test File Existence</h2>
+        <p>Check if audio files can be accessed:</p>
+        <button onclick="testFileExists()">Test File Access</button>
+        <div id="fileTestLog"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. Test Direct Audio Loading</h2>
+        <p>Try loading audio files directly from lesssons/audio/ folder:</p>
+        <button onclick="testDirectLoad('sa.m4a')">Test SA (Sa)</button>
+        <button onclick="testDirectLoad('re.m4a')">Test RE (Re)</button>
+        <button onclick="testDirectLoad('ga.m4a')">Test GA (Ga)</button>
+        <div id="directLoadLog"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. Test Audio Playback</h2>
+        <p>If files load, try playing them:</p>
+        <button onclick="playAudio('lessons/audio/sa.m4a')">Play SA Sound</button>
+        <button onclick="playAudio('lessons/audio/re.m4a')">Play RE Sound</button>
+        <button onclick="playAudio('lessons/audio/ga.m4a')">Play GA Sound</button>
+        <div id="playLog"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. Browser Information</h2>
+        <div id="browserInfo"></div>
+    </div>
+
+    <script>
+        function log(message, isError = false) {
+            const timestamp = new Date().toLocaleTimeString();
+            console.log(`[${timestamp}] ${message}`);
+            return `[${timestamp}] ${message}`;
+        }
+
+        function addLogEntry(elementId, message, isError = false) {
+            const logDiv = document.getElementById(elementId);
+            const entry = document.createElement('div');
+            entry.className = `log ${isError ? 'error' : 'success'}`;
+            entry.textContent = log(message, isError);
+            logDiv.appendChild(entry);
+        }
+
+        function testFileExists() {
+            const logId = 'fileTestLog';
+            document.getElementById(logId).innerHTML = '';
+            
+            const files = ['sa.m4a', 're.m4a', 'ga.m4a', 'ma.m4a', 'pa.m4a', 'da.m4a', 'ni.m4a', 'saa.m4a'];
+            
+            files.forEach(file => {
+                const path = `lessons/audio/${file}`;
+                fetch(path)
+                    .then(response => {
+                        if (response.ok) {
+                            addLogEntry(logId, `✓ Found: ${path} (${response.size} bytes or loading)`);
+                        } else {
+                            addLogEntry(logId, `✗ Not found: ${path} (Status: ${response.status})`, true);
+                        }
+                    })
+                    .catch(error => {
+                        addLogEntry(logId, `✗ Error accessing ${path}: ${error.message}`, true);
+                    });
+            });
+        }
+
+        function testDirectLoad(filename) {
+            const logId = 'directLoadLog';
+            document.getElementById(logId).innerHTML = '';
+            
+            const path = `lessons/audio/${filename}`;
+            addLogEntry(logId, `Attempting to load: ${path}`);
+            
+            const audio = new Audio();
+            audio.crossOrigin = "anonymous";
+            
+            audio.addEventListener('loadstart', () => {
+                addLogEntry(logId, `→ loadstart event fired`);
+            });
+            
+            audio.addEventListener('canplay', () => {
+                addLogEntry(logId, `✓ canplay event: Audio can play`);
+            });
+            
+            audio.addEventListener('canplaythrough', () => {
+                addLogEntry(logId, `✓ canplaythrough event: Audio fully ready`);
+            });
+            
+            audio.addEventListener('loadedmetadata', () => {
+                addLogEntry(logId, `✓ loadedmetadata: Duration = ${audio.duration.toFixed(2)}s`);
+            });
+            
+            audio.addEventListener('playing', () => {
+                addLogEntry(logId, `✓ playing event: Audio started`);
+            });
+            
+            audio.addEventListener('ended', () => {
+                addLogEntry(logId, `✓ ended event: Audio finished`);
+            });
+            
+            audio.addEventListener('error', (e) => {
+                addLogEntry(logId, `✗ error event: ${audio.error.message || 'Unknown error'}`, true);
+                addLogEntry(logId, `  Error code: ${audio.error.code}`, true);
+            });
+            
+            audio.src = path;
+            addLogEntry(logId, `→ Source set, calling load()...`);
+            audio.load();
+        }
+
+        function playAudio(path) {
+            const logId = 'playLog';
+            document.getElementById(logId).innerHTML = '';
+            
+            addLogEntry(logId, `Playing: ${path}`);
+            
+            const audio = new Audio();
+            audio.crossOrigin = "anonymous";
+            audio.volume = 1.0;
+            
+            audio.addEventListener('error', (e) => {
+                addLogEntry(logId, `✗ Playback error: ${audio.error.message}`, true);
+                addLogEntry(logId, `  Error code: ${audio.error.code}`, true);
+            });
+            
+            audio.addEventListener('canplaythrough', () => {
+                addLogEntry(logId, `✓ Ready - attempting to play...`);
+                audio.play()
+                    .then(() => addLogEntry(logId, `✓ Play successful`))
+                    .catch(err => addLogEntry(logId, `✗ Play failed: ${err.message}`, true));
+            });
+            
+            audio.addEventListener('ended', () => {
+                addLogEntry(logId, `✓ Playback completed`);
+            });
+            
+            audio.src = path;
+            audio.load();
+        }
+
+        function showBrowserInfo() {
+            const info = {
+                'User Agent': navigator.userAgent,
+                'Audio Support': 'AudioContext' in window ? 'Yes' : 'No',
+                'Audio Element': 'HTMLAudioElement' in window ? 'Yes' : 'No',
+                'Fetch Support': 'fetch' in window ? 'Yes' : 'No',
+                'Current Protocol': window.location.protocol,
+                'Current Origin': window.location.origin,
+                'Supported Formats': {
+                    'MP3': canPlayType('audio/mpeg'),
+                    'WAV': canPlayType('audio/wav'),
+                    'M4A': canPlayType('audio/mp4'),
+                    'OGG': canPlayType('audio/ogg')
+                }
+            };
+            
+            const infoDiv = document.getElementById('browserInfo');
+            Object.entries(info).forEach(([key, value]) => {
+                const entry = document.createElement('div');
+                entry.className = 'log';
+                if (typeof value === 'object') {
+                    entry.textContent = `${key}: ${JSON.stringify(value, null, 2)}`;
+                } else {
+                    entry.textContent = `${key}: ${value}`;
+                }
+                infoDiv.appendChild(entry);
+            });
+        }
+
+        function canPlayType(type) {
+            const audio = document.createElement('audio');
+            const canPlay = audio.canPlayType(type);
+            return canPlay ? canPlay : 'Not supported';
+        }
+
+        // Run browser info on load
+        window.addEventListener('DOMContentLoaded', showBrowserInfo);
+    </script>
+</body>
+</html>

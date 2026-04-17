@@ -21,6 +21,70 @@ const noteFrequencies = {
 
 const noteLetters = ['S', 'R', 'G', 'M', 'P', 'D', 'N', 'Ṡ'];
 
+// Mapping of notes to audio file names (MP3 format)
+const noteAudioFiles = {
+    'S': 'sa.mp3',
+    'R': 're.mp3',
+    'G': 'ga.mp3',
+    'M': 'ma.mp3',
+    'P': 'pa.mp3',
+    'D': 'da.mp3',
+    'N': 'ni.mp3',
+    'Ṡ': 'saa.mp3'
+};
+
+// Cache for audio durations
+const audioCache = {};
+
+// Load audio file (MP3 format)
+async function loadAudioFile(note) {
+    const filename = noteAudioFiles[note];
+    if (!filename) {
+        console.warn(`[loadAudioFile] No audio file mapped for note: ${note}`);
+        return null;
+    }
+    
+    const audioPath = `lessons/audio/${filename}`;
+    console.log(`[loadAudioFile] Loading: ${audioPath}`);
+    
+    const audio = new Audio();
+    audio.crossOrigin = "anonymous";
+    
+    try {
+        return await new Promise((resolve, reject) => {
+            const timeout = setTimeout(() => {
+                reject(new Error('Load timeout'));
+            }, 3000);
+            
+            audio.oncanplaythrough = () => {
+                clearTimeout(timeout);
+                console.log(`[loadAudioFile] Ready: ${filename}`);
+                resolve(audio);
+            };
+            
+            audio.onerror = () => {
+                clearTimeout(timeout);
+                reject(new Error(`Cannot load: ${filename}`));
+            };
+            
+            audio.src = audioPath;
+            audio.load();
+        });
+    } catch (error) {
+        console.error(`[loadAudioFile] Failed: ${error.message}`);
+        return null;
+    }
+}
+
+function getMimeType(format) {
+    const mimeTypes = {
+        'mp3': 'audio/mpeg',
+        'webm': 'audio/webm',
+        'm4a': 'audio/mp4'
+    };
+    return mimeTypes[format] || '';
+}
+
 // Current lesson data
 let currentLesson = {
     name: '',
@@ -81,59 +145,85 @@ function playNote(note, duration = 0.3) {
     oscillator.stop(now + duration);
 }
 
-// Simple text-to-speech for voice
+// Play voice note using pre-recorded audio files
 async function speakNote(note) {
-    if (!voiceEnabled || !('speechSynthesis' in window)) return;
+    if (!voiceEnabled) return;
 
-    const noteNames = {
-        'S': 'Sa',
-        'R': 'Re',
-        'G': 'Ga',
-        'M': 'Ma',
-        'P': 'Pa',
-        'D': 'Da',
-        'N': 'Ni',
-        'Ṡ': 'Saa'
-    };
-
-    const utterance = new SpeechSynthesisUtterance(noteNames[note]);
+    console.log(`[speakNote] Starting for note: ${note}`);
     
-    // Get female voice
-    const voices = speechSynthesis.getVoices();
-    const femaleVoice = voices.find(voice => 
-        voice.name.includes('Female') || 
-        voice.name.includes('female') ||
-        voice.name.includes('woman') ||
-        voice.name.includes('Woman') ||
-        voice.name.includes('Google UK English Female')
-    );
-    
-    if (femaleVoice) {
-        utterance.voice = femaleVoice;
+    try {
+        const audio = await loadAudioFile(note);
+        
+        if (!audio) {
+            console.warn(`[speakNote] Could not load audio for note: ${note}`);
+            return;
+        }
+        
+        // Audio is ready, play it
+        console.log(`[speakNote] Playing audio for: ${note}`);
+        audio.volume = 1.0;
+        
+        return new Promise((resolve) => {
+            const timeoutId = setTimeout(() => {
+                console.warn(`[speakNote] Playback timeout for: ${note}`);
+                resolve();
+            }, 5000);
+            
+            audio.onended = () => {
+                clearTimeout(timeoutId);
+                console.log(`[speakNote] Playback ended: ${note}`);
+                resolve();
+            };
+            
+            audio.onerror = () => {
+                clearTimeout(timeoutId);
+                console.error(`[speakNote] Playback error for: ${note}`);
+                resolve();
+            };
+            
+            audio.play()
+                .then(() => console.log(`[speakNote] Audio play() succeeded: ${note}`))
+                .catch(err => {
+                    console.error(`[speakNote] Audio play() failed: ${err.message}`);
+                    clearTimeout(timeoutId);
+                    resolve();
+                });
+        });
+    } catch (error) {
+        console.error('[speakNote] Exception:', error);
+        return Promise.resolve();
     }
-    
-    // Settings for melodious, elongated female voice
-    utterance.rate = 0.8;      // Slower rate for melodious sound
-    utterance.pitch = 1.4;     // Higher pitch for female voice
-    utterance.volume = 0.8;    // Good volume level
-    
-    // Return a promise that resolves after voice finishes
-    return new Promise(resolve => {
-        speechSynthesis.cancel();
+}
+
+// Get the duration of a voice audio file
+async function getAudioDuration(note) {
+    if (!voiceEnabled) return 1250; // Default tempo if voice disabled
+
+    const audioInfo = noteAudioFiles[note];
+    if (!audioInfo) return 1250;
+
+    // Create a cache key from all possible formats
+    const cacheKey = `${note}_duration`;
+    if (audioCache[cacheKey] !== undefined) {
+        return audioCache[cacheKey];
+    }
+
+    try {
+        const audio = await loadAudioFile(note);
         
-        utterance.onend = () => {
-            resolve();
-        };
+        if (audio && audio.duration && audio.duration > 0) {
+            const duration = Math.round(audio.duration * 1000); // Convert to milliseconds
+            audioCache[cacheKey] = duration;
+            console.log(`[getAudioDuration] ${note}: ${duration}ms`);
+            return duration;
+        }
         
-        utterance.onerror = () => {
-            resolve();
-        };
-        
-        // Fallback timeout to ensure we don't wait too long
-        setTimeout(resolve, 1250);
-        
-        speechSynthesis.speak(utterance);
-    });
+        console.warn(`[getAudioDuration] Could not get duration for: ${note}`);
+        return 1250;
+    } catch (error) {
+        console.error('[getAudioDuration] Error:', error);
+        return 1250;
+    }
 }
 
 // Load lessons from text files
@@ -146,10 +236,7 @@ async function loadLessons() {
         
         if (!response.ok) {
             // Fallback: Use predefined lessons
-            const predefinedLessons = [
-                { name: 'sarali-varisai', display: 'Sarali Varisai' }
-            ];
-            loadPredefinedLessons(predefinedLessons);
+            loadPredefinedLessons(getPredefinedLessons());
             return;
         }
 
@@ -166,12 +253,22 @@ async function loadLessons() {
         if (lessons.length > 0) {
             loadPredefinedLessons(lessons);
         } else {
-            loadPredefinedLessons([{ name: 'sarali-varisai', display: 'Sarali Varisai' }]);
+            loadPredefinedLessons(getPredefinedLessons());
         }
     } catch (error) {
         console.log('Could not load lessons from server, using fallback');
-        loadPredefinedLessons([{ name: 'sarali-varisai', display: 'Sarali Varisai' }]);
+        loadPredefinedLessons(getPredefinedLessons());
     }
+}
+
+function getPredefinedLessons() {
+    // List of all available lesson files
+    return [
+        { name: 'sarali-varisai', display: 'Sarali Varisai' },
+        { name: 'geetham-2', display: 'Geetham 2' },
+        { name: 'jantai', display: 'Jantai' },
+        { name: 'advanced-patterns', display: 'Advanced Patterns' }
+    ];
 }
 
 function loadPredefinedLessons(lessons) {
@@ -394,8 +491,6 @@ async function playLinesForVarisai(targetVarisai) {
 
 // Play notes in a line
 async function playLineNotes(notes) {
-    const tempo = 1250; // milliseconds per beat (1.25 seconds)
-    
     // Highlight the current line being played in the text panel
     highlightCurrentLine();
     
@@ -414,6 +509,15 @@ async function playLineNotes(notes) {
         let note = cleanNotes[i];
         currentNoteIndex = i;
         
+        // Get tempo - use audio duration if voice is enabled, otherwise default
+        let tempo = 1250; // Default tempo (1.25 seconds)
+        if (voiceEnabled && !noteAudioFiles[note]) {
+            tempo = 1250;
+        } else if (voiceEnabled) {
+            // Get duration of this note's audio file
+            tempo = await getAudioDuration(note);
+        }
+        
         // Handle comma - sustain the previous note
         if (note === ',') {
             if (previousNote) {
@@ -426,15 +530,21 @@ async function playLineNotes(notes) {
             highlightNote(note, cleanNotes);
             playNote(note, tempo / 1000);
             
-            // Wait for the voice to complete (up to tempo duration)
-            const startTime = Date.now();
-            await speakNote(note);
-            const elapsedTime = Date.now() - startTime;
-            
-            // Wait for remaining tempo time
-            const remainingTime = Math.max(0, tempo - elapsedTime);
-            if (remainingTime > 0) {
-                await new Promise(resolve => setTimeout(resolve, remainingTime));
+            // Play voice if enabled
+            if (voiceEnabled) {
+                // Wait for the voice to complete
+                const startTime = Date.now();
+                await speakNote(note);
+                const elapsedTime = Date.now() - startTime;
+                
+                // Wait for remaining tempo time
+                const remainingTime = Math.max(0, tempo - elapsedTime);
+                if (remainingTime > 0) {
+                    await new Promise(resolve => setTimeout(resolve, remainingTime));
+                }
+            } else {
+                // Just wait for the default tempo
+                await new Promise(resolve => setTimeout(resolve, tempo));
             }
             
             previousNote = note;
@@ -639,6 +749,169 @@ function updateProgress() {
         : 'Ready to learn';
     document.getElementById('progressText').textContent = status;
 }
+
+// Feedback System
+let currentRating = 0;
+
+function openFeedback() {
+    const modal = document.getElementById('feedbackModal');
+    modal.classList.add('active');
+    
+    // Load and display feedback history
+    displayFeedbackHistory();
+}
+
+function closeFeedback() {
+    const modal = document.getElementById('feedbackModal');
+    modal.classList.remove('active');
+    // Reset form
+    resetFeedbackForm();
+}
+
+function displayFeedbackHistory() {
+    const feedbackList = document.getElementById('feedbackList');
+    const feedbackListSection = document.getElementById('feedbackListSection');
+    
+    // Get feedback from localStorage
+    const allFeedback = JSON.parse(localStorage.getItem('userFeedback') || '[]');
+    
+    if (allFeedback.length === 0) {
+        feedbackListSection.style.display = 'none';
+        return;
+    }
+    
+    // Show the section
+    feedbackListSection.style.display = 'block';
+    feedbackList.innerHTML = '';
+    
+    // Display feedback in reverse order (newest first)
+    allFeedback.slice().reverse().forEach((feedback, index) => {
+        const feedbackDiv = document.createElement('div');
+        feedbackDiv.className = 'feedback-item';
+        
+        // Format date
+        const date = new Date(feedback.timestamp);
+        const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        
+        // Build stars
+        const stars = '★'.repeat(feedback.rating) + '☆'.repeat(5 - feedback.rating);
+        
+        // Build HTML
+        let html = `
+            <div class="feedback-item-header">
+                <span class="feedback-stars">${stars}</span>
+                <span class="feedback-timestamp">${formattedDate}</span>
+            </div>
+            <div class="feedback-name">👤 <strong>${feedback.name}</strong></div>
+        `;
+        
+        if (feedback.message) {
+            html += `<div class="feedback-message">"${feedback.message}"</div>`;
+        }
+        
+        if (feedback.email) {
+            html += `<div class="feedback-email">📧 ${feedback.email}</div>`;
+        }
+        
+        if (feedback.currentPage) {
+            html += `<div class="feedback-page">From: ${feedback.currentPage}</div>`;
+        }
+        
+        feedbackDiv.innerHTML = html;
+        feedbackList.appendChild(feedbackDiv);
+    });
+}
+
+function resetFeedbackForm() {
+    currentRating = 0;
+    document.getElementById('feedbackName').value = '';
+    document.getElementById('feedbackText').value = '';
+    document.getElementById('feedbackEmail').value = '';
+    document.getElementById('ratingDisplay').textContent = 'Select a rating';
+    document.querySelectorAll('.star').forEach(star => {
+        star.classList.remove('active');
+    });
+}
+
+function setRating(rating) {
+    currentRating = rating;
+    document.getElementById('ratingDisplay').textContent = `You rated: ${rating} star${rating !== 1 ? 's' : ''}`;
+    
+    // Highlight stars
+    document.querySelectorAll('.star').forEach((star, index) => {
+        if (index < rating) {
+            star.classList.add('active');
+        } else {
+            star.classList.remove('active');
+        }
+    });
+}
+
+function submitFeedback() {
+    if (currentRating === 0) {
+        alert('Please select a rating before submitting.');
+        return;
+    }
+    
+    const feedback = {
+        rating: currentRating,
+        name: document.getElementById('feedbackName').value || 'Anonymous',
+        message: document.getElementById('feedbackText').value,
+        email: document.getElementById('feedbackEmail').value,
+        timestamp: new Date().toISOString(),
+        currentPage: document.getElementById('lessonPage').classList.contains('active') 
+            ? `Lesson: ${currentLesson.name}` 
+            : 'Home Page',
+        userAgent: navigator.userAgent
+    };
+    
+    // Store feedback locally
+    const allFeedback = JSON.parse(localStorage.getItem('userFeedback') || '[]');
+    allFeedback.push(feedback);
+    localStorage.setItem('userFeedback', JSON.stringify(allFeedback));
+    
+    console.log('Feedback submitted:', feedback);
+    
+    // Show success message
+    showSuccessMessage('Thank you for your feedback!');
+    
+    // Reload feedback history to show the new submission
+    displayFeedbackHistory();
+    
+    // Reset and close form
+    resetFeedbackForm();
+    setTimeout(() => closeFeedback(), 500);
+}
+
+function showSuccessMessage(message) {
+    const existingMessage = document.querySelector('.feedback-success');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+    
+    const successDiv = document.createElement('div');
+    successDiv.className = 'feedback-success';
+    successDiv.textContent = message;
+    document.body.appendChild(successDiv);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        successDiv.style.animation = 'slideInRight 0.3s ease-out reverse';
+        setTimeout(() => successDiv.remove(), 300);
+    }, 3000);
+}
+
+// Close modal when clicking outside
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('feedbackModal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeFeedback();
+            }
+        });
+    }
+});
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', function() {
