@@ -1,0 +1,13 @@
+1. 
+D P | M G R S || R M | P D M P ||
+D Ṡ | Ṙ Ṡ D P || D P | M G R S ||
+S , | R , R , || D P | M G R S ||
+S R | M , G R || S R | G R S , ||
+
+2.
+D P | M G R S || R M | P D M P ||
+D Ṙ | Ṙ Ṡ D P || D P | M G R S ||
+
+3.
+D P | M G R S || R M | P D M P ||
+D Ṙ | Ṙ Ṡ D P || D P | M G R S ||
